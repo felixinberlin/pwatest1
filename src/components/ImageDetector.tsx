@@ -1,52 +1,67 @@
 import { useState } from "react";
 import { detectTimber } from "../api/timbervision";
 
+
 export default function ImageDetector() {
+
   const [image, setImage] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+
   async function handleDetect() {
+
     if (!image) return;
 
     setLoading(true);
 
     try {
+
       const data = await detectTimber(image);
+
       setResult(data);
+
     } catch (error) {
+
       console.error(error);
       alert("Detection failed");
+
     } finally {
+
       setLoading(false);
+
     }
   }
 
+
   return (
     <div>
+
       <input
         type="file"
         accept="image/*"
-        onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+        onChange={(e) =>
+          setImage(e.target.files?.[0] ?? null)
+        }
       />
 
-      <button disabled={!image || loading} onClick={handleDetect}>
-        {loading ? "Analyzing..." : "Detect timber"}
+
+      <button
+        disabled={!image || loading}
+        onClick={handleDetect}
+      >
+        {loading
+          ? "Analyzing..."
+          : "Detect timber"}
       </button>
 
-      {result && (
-        <>
-          <pre>{JSON.stringify(result, null, 2)}</pre>
 
-          {result.visualization_base64 && (
-            <img
-              src={`data:image/png;base64,${result.visualization_base64}`}
-              alt="Detection result"
-              style={{ maxWidth: "100%", marginTop: "20px" }}
-            />
-          )}
-        </>
+      {result && (
+        <pre>
+          {JSON.stringify(result, null, 2)}
+        </pre>
       )}
+
     </div>
   );
 }
